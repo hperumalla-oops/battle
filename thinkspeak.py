@@ -1,16 +1,16 @@
 import requests
 import time
-import Adafruit_DHT
+import board
+import adafruit_dht
 
 api_key = "J6WDF39BE27DX1H"
+sensor = adafruit_dht.DHT11(board.D4)  ##for GPIO4
 
-pin = 4
-sensor = Adafruit_DHT.DHT11
-
-i = 10
+a = 10
 
 while a:
-    humidity, temperature = Adafruit_DHT.read(sensor, pin)
+    temperature = sensor.temperature
+    humidity = sensor.humidity
     payload = {'api_key': api_key, 
                'field1': str(temperature),
                 'field2': str(humidity)}

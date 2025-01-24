@@ -10,13 +10,13 @@ def CaptureImage():
 	ret, image = cam.read()
 	k = cv2.waitKey(1000)
 	print("Image Capture successfully")
-	cv2.imwrite('/home/pi/pictures/testimage.jpg',image)
+	cv2.imwrite('testimage.jpg',image)
 	cam.release()
 	cv2.destroyAllWindows()
 
 def AnnotateImage():
 	print("print Annotation Completed..")
-	ImageCopy = cv2.imread('/home/pi/Picture/testimage.jpg',image)
+	ImageCopy = cv2.imread('testimage.jpg',image)
 	ImageDimension = ImageCopy.shape
 	print("Dimension of the Image :",str(ImageDimension))
 	Start = (0,340)

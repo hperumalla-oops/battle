@@ -1,15 +1,14 @@
 #include "config.h"
-#include <Adafruit_SSD1306.h>
-#include <SPI.h>
-
+#include <Adafruit_SSD1306.h>      //for oled screen
+#include <Wire.h>       /// to communicate with I2C devices
 
 #define BUZZER_PIN 2
 #define ECHO_PIN 14
 #define TRIGGER_PIN 12
 #define SDA_PIN 4
 #define SCL_PIN 5
-#define DISTANCE_THRESHOLD 10
 
+#define DISTANCE_THRESHOLD 10
 long duration;
 float distance;
 

@@ -17,10 +17,10 @@ void setup()
 {
   Serial.begin(115200);
   
-  oled.begin(SSD136_SWITCCHCAPVCC, 0X3C);
+  oled.begin(SSD136_SWITCHCAPVCC, 0X3C);
   oled.display();
   oled.setTextSize(1);
-  oled.setColor(WHITE);
+  oled.setTextColor(WHITE);
   oled.clearDisplay();
   
 }

@@ -6,6 +6,7 @@ Adafruit_Sensor.h
 Adafruit_DHT
 matplotlib.pyplot
 time
+board
 
 requests
 

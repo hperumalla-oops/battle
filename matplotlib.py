@@ -5,7 +5,6 @@ import board
 
 
 sensor = adafruit_DHT.DHT11(board.D4)
-pin = 4
 a = 10
 
 temperature_data = []

@@ -1,9 +1,10 @@
-import Adafruit_DHT
+import adafruit_DHT
 import matplotlib.pyplot as plt
 import time
+import board
 
 
-sensor = Adafruit_DHT.DHT11
+sensor = adafruit_DHT.DHT11(board.D4)
 pin = 4
 a = 10
 
@@ -11,9 +12,10 @@ temperature_data = []
 humidity_data = []
 
 while a:
-    humidity, temperature = Adafruit_DHT.read(sensor, pin)
-    temperature_data.append(temperature)
-    humidity_data.append(humidity)
+    T = sensor.temperature
+    H = sensor.humidity
+    temperature_data.append(T)
+    humidity_data.append(H)
     time.sleep(5)
     a -= 1
 

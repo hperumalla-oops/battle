@@ -1,0 +1,14 @@
+config.h             
+Adafruit_SSD1306.h 
+Wire.h              
+Adafruit_Sensor.h
+
+Adafruit_DHT
+matplotlib.pyplot
+time
+
+requests
+
+opencv-python
+pushbullet.py
+socket

@@ -4,7 +4,7 @@ import socket
 s = socket.socket()
 port = 12346
 s.bind(('',port))
-print("socket blinded to %s" %(port))
+print("socket blinded to",port)
 s.listen(5)
 print("server is ready to accept the connection")
 

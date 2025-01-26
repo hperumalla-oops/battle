@@ -10,7 +10,7 @@
 
 ## RPi programs (Always work in a virtual environment.)
 
-###  for `pip` for Python 3
+###  pip
 `sudo apt install python3-pip`
 
 ###  venv

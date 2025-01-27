@@ -59,7 +59,7 @@ void loop() {
     noTone(BUZZER_PIN);
 
   // Display the distance on the OLED display
-  oled.clearDisplay(0,0);
+  oled.clearDisplay();
   oled.setCursor(0,0);
   oled.print("Distance:");
   oled.print(distance);

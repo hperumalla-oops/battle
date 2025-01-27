@@ -16,7 +16,7 @@ Adafruit_SSD1306 oled(128,32, &Wire);
 
 void setup() 
 {  
-  oled.begin(SSD136_SWITCHCAPVCC, 0X3C);
+  oled.begin(SSD1306_SWITCHCAPVCC, 0X3C);
   oled.display();
   oled.setTextSize(1);
   oled.setTextColor(WHITE);

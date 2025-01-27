@@ -39,7 +39,9 @@
 ### time
 `pip3 install TIME-python`
 
-### board     
+### board    
+`pip3 install adafruit-blinka`
+
 
 ### tkinter
 `sudo apt-get install python3-tk`

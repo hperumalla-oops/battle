@@ -1,8 +1,13 @@
 ESP8266 Libraries
 config.h
 Adafruit_SSD1306.h
+`Adafruit SSD1306`
+Adafruit GFX Library
+
 Wire.h
+
 Adafruit_Sensor.h
+`Adafruit Unified Sensor`
 
 RPi programs (Always work in a virtual environment.)
 

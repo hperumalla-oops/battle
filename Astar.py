@@ -1,136 +1,119 @@
-game_over=[[1,2,3],[4,5,6],[7,8," "]]
-#game_over=[[1,2,3],[8," ",4],[7,6,5]]
+import copy
 
-g=1
+# Goal state
+GOAL_STATE = [[1,2,3],[4,5,6],[7,8," "]]
 
 def string_to_grid(state):
+    """Convert input string to 3x3 grid."""
     grid = []
     for i in range(0, 9, 3):
         row = [int(c) if c != '0' else " " for c in state[i:i+3]]
         grid.append(row)
     return grid
 
-def print_grid(lol):
-    for row in lol:
-        for num in row:
-            print(num,"|",end="")
-        print("\n----------")
-        
-def h(grid): ##number of misplaces squares
-    h=0
+def print_grid(grid):
+    """Print the grid in a formatted way."""
+    for row in grid:
+        print(" | ".join(str(num) for num in row))
+        print("-" * 9)
+
+def find_blank(grid):
+    """Find the position of the blank space."""
     for i in range(3):
         for j in range(3):
-            if grid[i][j]!=game_over[i][j] and grid[i][j]!=" ":
-                h=h+1
+            if grid[i][j] == " ":
+                return i, j
+    return None
 
-    return h
+def get_possible_moves(row, col):
+    """Get possible moves for the blank space."""
+    moves = [
+        (row-1, col),  # Up
+        (row+1, col),  # Down
+        (row, col-1),  # Left
+        (row, col+1)   # Right
+    ]
+    return [(r, c) for r, c in moves if 0 <= r < 3 and 0 <= c < 3]
 
-def blank(grid):
-    ##need to find out where " "  is
-    row=col=0
-    for row in range(3):
-        for col in range(3):
-            #print(grid[row][col])
-            if grid[row][col]==" ":
-                return (row,col)
+def heuristic(grid):
+    """Calculate the number of misplaced tiles."""
+    misplaced = 0
+    for i in range(3):
+        for j in range(3):
+            if grid[i][j] != GOAL_STATE[i][j] and grid[i][j] != " ":
+                misplaced += 1
+    return misplaced
 
-def moves_cal(row,col):  
-    moves=[]  ## where can the blank go to
-    lol=[]
-    moves=[(row-1,col),(row+1,col),(row,col+1),(row,col-1)]
-    for a,b in moves:
-        if a in (0,1,2) and b in (0,1,2):
-            lol.append((a,b))
-
-    
-    return lol
-
-
-def first_swap(grid,a,b,row,col):
-    ##so i gottta create a new grid and then swap shit coz, cant mess with the originl
-    new_grid=[row[:] for row in grid]
-    new_grid[row][col], new_grid[a][b]=new_grid[a][b],new_grid[row][col] ##swapping
-    # temp=grid[row][col]
-    # grid[row][col]=grid[a][b]
-    # grid[a][b]=temp
-
-    # #print("one sqaure moved:", grid, f[i])  ## grid it is evaluting
-    # return grid
-    
 def grid_to_tuple(grid):
+    """Convert grid to a hashable tuple representation."""
     return tuple(tuple(row) for row in grid)
 
-# def rev_swap(grid,a,b,row,col):
-#     #print(row,col)
-#     temp=grid[row][col]
-#     grid[row][col]=grid[a][b]
-#     grid[a][b]=temp
+def solve_puzzle(initial_grid):
+    """Solve the 8-puzzle using A* algorithm."""
+    # Open set tracks states to explore, with (state, g_cost, f_cost, parent)
+    open_set = {grid_to_tuple(initial_grid): (initial_grid, 0, heuristic(initial_grid), None)}
+    closed_set = set()
 
-# def make_grid_copy(farm):
-#     lol=[[0]*3 for _ in range(3)]
-#     i=j=0
-#     for i in range(3):
-#         for j in range(3):
-#             #print(i,j)
-#             lol[i][j]=farm[i][j]
+    while open_set:
+        # Get the state with the lowest f_cost
+        current_tuple = min(open_set, key=lambda x: open_set[x][2])
+        current_grid, g_cost, f_cost, parent = open_set[current_tuple]
 
-#     return lol
+        # Check if goal is reached
+        if current_grid == GOAL_STATE:
+            # Reconstruct path
+            path = []
+            while current_grid is not None:
+                path.append(current_grid)
+                current_tuple = grid_to_tuple(current_grid)
+                _, _, _, current_grid = open_set.get(current_tuple, (None, None, None, parent))
+            return list(reversed(path))
 
-def main(grid,a=-1,b=-1):
-    print_grid(grid)
-    global g
+        # Move current state to closed set
+        del open_set[current_tuple]
+        closed_set.add(current_tuple)
 
-    ##intializing an open set
-    open_set ={grid_to_tuple(grid):(0,h(grid),None)}  ##in the format of {state: (g,f,parent)}
-    closed_set=set()
+        # Find blank space
+        blank_row, blank_col = find_blank(current_grid)
 
-    parent_map={}
+        # Generate possible moves
+        for move_row, move_col in get_possible_moves(blank_row, blank_col):
+            # Create a new grid by swapping blank space
+            new_grid = copy.deepcopy(current_grid)
+            new_grid[blank_row][blank_col], new_grid[move_row][move_col] = \
+                new_grid[move_row][move_col], new_grid[blank_row][blank_col]
 
-    while open_set :
-        if game_over==grid:
-            break
-        print("g:",g)
-        row,col=blank(grid)
-        #print(row,col)
-        moves=moves_cal(row,col)
-        if (a,b) in moves:
-            moves.remove((a,b))
-        #print("moves:",moves)
+            new_tuple = grid_to_tuple(new_grid)
 
-        grids=[]
-        f=[]
-        i=0
-        for a,b in moves:
-            x=first_swap(grid,a,b,row,col)
-            #print(x)
-            grids.append(make_grid_copy(x))
-            f.append(h(grids[i])+g)
+            # Skip if already explored
+            if new_tuple in closed_set:
+                continue
 
-            # print_grid(grids[i])
-            # print(f[i])
+            # Calculate new costs
+            new_g_cost = g_cost + 1
+            new_f_cost = new_g_cost + heuristic(new_grid)
 
-            rev_swap(grid,a,b,row,col)
-            #print(grids[i])
+            # Check if this path is better or state is new
+            if new_tuple not in open_set or new_f_cost < open_set[new_tuple][2]:
+                open_set[new_tuple] = (new_grid, new_g_cost, new_f_cost, current_grid)
 
-            i=i+1
+    return None  # No solution found
 
-        print("\n")
-        # for i in range(3):
-        #     print(grids[i],f[i])
-        g=g+1
-        #print("g: ",g)
+def main():
+    # Get input from user
+    state_input = input("Enter the initial state (9 digits, use 0 for blank): ")
+    initial_grid = string_to_grid(state_input)
 
-        #print(f)
-        #one(grids[f.index(max(f))],moves[f.index(max(f))])
-        grid=grids[f.index(min(f))]
-        a,b=row,col
-        #print("next grid\n a,b",grid,a,b)
-        print_grid(grid)
-        #print(a,b)
+    # Solve the puzzle
+    solution = solve_puzzle(initial_grid)
 
-    
-        ##okay it cant do the same move again
-        
-                
-grid=string_to_grid(input("enter string: "))
-main(grid)
+    if solution:
+        print("\nSolution found in {} steps:".format(len(solution) - 1))
+        for step, grid in enumerate(solution):
+            print(f"\nStep {step}:")
+            print_grid(grid)
+    else:
+        print("No solution exists for this puzzle.")
+
+if __name__ == "__main__":
+    mnew() 
